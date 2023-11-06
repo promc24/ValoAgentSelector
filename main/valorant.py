@@ -16,6 +16,6 @@ def user_input():
         input('Numbers of agents cannot be more than 5, please try again ')
         return user_input()
     else:
-        database_connect.access_db(agent_number)
+        database_connect.database_connection(agent_number)
 
 user_input()
