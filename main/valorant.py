@@ -26,7 +26,7 @@ def get_agents_info():
                 #If number present in the least start second while loop
                 if specification == agent[0]:
                     while w_loop2 == True:
-                        wanted_info = int(input('Select one of the option by typing the corrisponding number:\n 1. Role Description\n 2. Agent Abilities\n'))
+                        wanted_info = int(input('Select one of the options by typing the corrisponding number:\n 1. Role Description\n 2. Agent Abilities\n\n'))
                         #fetch role details data from database_connect.py
                         if wanted_info == 1:
                             database_connect.get_role_details(agent[2], agent[0])

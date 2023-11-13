@@ -5,6 +5,7 @@ import os
 db_path = 'database/valorant_agents.db'
 agents_outcome = []
 end_program_msg = 'Thank you for using this program!'
+agents_excluded = []
 
 
 def database_connection(agent_number):
@@ -16,13 +17,57 @@ def database_connection(agent_number):
                 sqliteConnection = sqlite3.connect(db_path)
                 cursor = sqliteConnection.cursor()
                 #Fetch the random agents numbers
-                cursor.execute("SELECT * FROM agents_details ORDER BY RANDOM() LIMIT " + str(agent_number) +";")
-                #Fetch and outputs results
-                result = cursor.fetchall()
-                for row in result:
-                    agents_outcome.append(row)
-                #Closes DB connecton
-                sqliteConnection.close()
+                exclude_a = input('Would you like to exclude any agents? ').upper()
+                if exclude_a == 'Y' or exclude_a == 'YES':
+                    print('Here is the list of all agents:\n\n')
+                    #Fetch all data from agents_details table
+                    cursor.execute("SELECT * FROM agents_details;")
+                    #Print agent number and name
+                    result = cursor.fetchall()
+                    for agent in result:
+                        print(str(agent[0]) + ') ' + agent[1])
+                    #cursor.execute("SELECT a_num FROM agents_details;")
+                    #agents_numbers = cursor.fetchall()
+
+                    
+                    #Takes user input splits them and inserts them into the empty list
+                    excluded_agents = input('Please type the agent(s) number you want to exclude by separating them with a space: ').split()
+                    for ex_agents in excluded_agents:
+                        #if ex_agents not in agents_numbers:
+                            #print('Plese make sure it in an existing agent number!')
+
+                        agents_excluded.append(ex_agents)
+
+                    #query string
+                    string = ''
+                    #For each inputted data adds query that excludes it
+                    for a in agents_excluded:
+                        if a == agents_excluded[0]:
+                            string = "WHERE a_num NOT LIKE '" +str(a) + "' "
+                            
+                        else:
+                            string = string + "AND a_num NOT LIKE '" +str(a) + "' "
+
+                    #Fetches the data in a random order limited to the wanted agents number
+                    cursor.execute("SELECT * FROM agents_details " + string + "ORDER BY RANDOM() LIMIT " + str(agent_number) +";")
+                    #Fetch and outputs results
+                    result = cursor.fetchall()
+                    for row in result:
+                        agents_outcome.append(row)
+                    #Closes DB connecton
+                    sqliteConnection.close()
+
+
+
+                else:
+                    #Fetches the data in a random order limited to the wanted agents number
+                    cursor.execute("SELECT * FROM agents_details ORDER BY RANDOM() LIMIT " + str(agent_number) +";")
+                    #Fetch and outputs results
+                    result = cursor.fetchall()
+                    for row in result:
+                        agents_outcome.append(row)
+                    #Closes DB connecton
+                    sqliteConnection.close()
             #Handle errors
             except sqlite3.Error as error:
                 print('Error occurred - ', error)
@@ -99,7 +144,7 @@ def get_ability_details(agent_num, role):
         print('Special Abilities names:\nQ. ' + result[0][0] + '\nE. ' + result[1][0] + '\nC. ' + result[2][0] + '\nX. ' + result[3][0])
         #starts while loop
         while True:
-            ability_detail = input('Type the ability letter to see its details or 1 to see all the details together: ').upper()
+            ability_detail = input('Type the ability letter to see its details or 1 to see all the details together: \n').upper()
             #depending on user answer fetches corrisponding info
             if ability_detail == 'Q':
                 cursor.execute("SELECT ability_details FROM agents_abilities WHERE ability_name = '" + result[0][0] + "'")
