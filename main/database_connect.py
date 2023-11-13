@@ -25,7 +25,7 @@ def database_connection(agent_number):
         sqliteConnection.close()
         
 
-    def access_db():
+    def get_random_agents():
             
             try:
                 #Connect to DB and creates a cursor
@@ -94,7 +94,7 @@ def database_connection(agent_number):
 
     #Checks if the database exists
     if os.path.exists(db_path):
-        access_db()
+        get_random_agents()
 
     else:
         sqliteConnection = None
@@ -113,7 +113,7 @@ def database_connection(agent_number):
             cursor.executescript(query)
             #Closes DB connection and runs the data fetching function
             sqliteConnection.close()
-            access_db()
+            get_random_agents()
         
         # Handle errors
         except sqlite3.Error as error:
