@@ -6,10 +6,25 @@ db_path = 'database/valorant_agents.db'
 agents_outcome = []
 end_program_msg = 'Thank you for using this program!'
 agents_excluded = []
+all_agents_num  = []
 
 
 def database_connection(agent_number):
-    #excutes sql and fetches the needed data
+
+    #Fetches all the agents numbers from database as strings
+    def all_existing_agents():
+        sqliteConnection = sqlite3.connect(db_path)
+        cursor = sqliteConnection.cursor()
+        #Executes the query
+        cursor.execute("SELECT a_num FROM agents_details;")
+        all_agents = cursor.fetchall()
+        #Appends results into list
+        for i in all_agents:
+            all_agents_num.append(str(i[0]))
+        #Closes DB connecton
+        sqliteConnection.close()
+        
+
     def access_db():
             
             try:
@@ -26,36 +41,39 @@ def database_connection(agent_number):
                     result = cursor.fetchall()
                     for agent in result:
                         print(str(agent[0]) + ') ' + agent[1])
-                    #cursor.execute("SELECT a_num FROM agents_details;")
-                    #agents_numbers = cursor.fetchall()
+                    
 
+                    all_existing_agents()
                     
                     #Takes user input splits them and inserts them into the empty list
-                    excluded_agents = input('Please type the agent(s) number you want to exclude by separating them with a space: ').split()
-                    for ex_agents in excluded_agents:
-                        #if ex_agents not in agents_numbers:
-                            #print('Plese make sure it in an existing agent number!')
+                    while True:
+                        excluded_agents = input('Please type the agent(s) number you want to exclude by separating them with a space: ').split()
+                        for ex_agents in excluded_agents:
+                            agents_excluded.append(ex_agents)
+                        if any (num in agents_excluded for num in all_agents_num):
+                            #query string
+                            string = ''
+                            #For each inputted data adds query that excludes it
+                            for a in agents_excluded:
+                                if a == agents_excluded[0]:
+                                    string = "WHERE a_num NOT LIKE '" +str(a) + "' "
+                                    
+                                else:
+                                    string = string + "AND a_num NOT LIKE '" +str(a) + "' "
 
-                        agents_excluded.append(ex_agents)
-
-                    #query string
-                    string = ''
-                    #For each inputted data adds query that excludes it
-                    for a in agents_excluded:
-                        if a == agents_excluded[0]:
-                            string = "WHERE a_num NOT LIKE '" +str(a) + "' "
-                            
+                            #Fetches the data in a random order limited to the wanted agents number
+                            cursor.execute("SELECT * FROM agents_details " + string + "ORDER BY RANDOM() LIMIT " + str(agent_number) +";")
+                            #Fetch and outputs results
+                            result = cursor.fetchall()
+                            for row in result:
+                                agents_outcome.append(row)
+                            #Closes DB connecton
+                            sqliteConnection.close()
+                            all_agents_num.clear()
+                            agents_excluded.clear()
+                            break
                         else:
-                            string = string + "AND a_num NOT LIKE '" +str(a) + "' "
-
-                    #Fetches the data in a random order limited to the wanted agents number
-                    cursor.execute("SELECT * FROM agents_details " + string + "ORDER BY RANDOM() LIMIT " + str(agent_number) +";")
-                    #Fetch and outputs results
-                    result = cursor.fetchall()
-                    for row in result:
-                        agents_outcome.append(row)
-                    #Closes DB connecton
-                    sqliteConnection.close()
+                            print('Please make sure you typed in existing agents!\n')
 
 
 
