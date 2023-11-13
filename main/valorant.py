@@ -12,41 +12,63 @@ import database_connect
 
 #Get further information of agents dependin gon user's needs
 def get_agents_info():
-    info = input('Would you like some info of the agents?').upper()
+    info = input('Would you like some info of the agent(s)?').upper()
     #Check if user requires more info
     if info in database_connect.user_answers:
-        #Boolean used to break the nested while loops
-        w_loop = True
-        w_loop2 = True
-        #Start of first while loop
-        while w_loop == True:
-            specification = int(input('Please specify which agent by typing the agent number: '))
-            #For loop to check if the selected agent is in the given list
-            for i,agent in enumerate(database_connect.agents_outcome):
-                #If number present in the least start second while loop
-                if specification == agent[0]:
-                    while w_loop2 == True:
-                        wanted_info = int(input('Select one of the options by typing the corrisponding number:\n 1. Role Description\n 2. Agent Abilities\n\n'))
-                        #fetch role details data from database_connect.py
-                        if wanted_info == 1:
-                            database_connect.get_role_details(agent[2], agent[0])
-                            #Set boolean to false to break the loops
-                            w_loop = False
-                            w_loop2 = False
-                        #fetch abilities details data from database_connect.py
-                        elif wanted_info == 2:
-                            database_connect.get_ability_details(agent[0], agent[2])
-                            #Set boolean to false to break the loops
-                            w_loop = False
-                            w_loop2 = False
-                        else:
-                            #Warn user and restart loop
-                            print("Please try again and make sure it's the corrisponding info number!")
 
-                else:
-                    #Restart loop if inserted number is not in the given list
-                    if i == len(database_connect.agents_outcome) - 1:
-                        print("Please try again and make sure it's the correct agent number!")
+        #if only one agent required directy asks for info
+        if len(database_connect.agents_outcome) == 1:
+            w_loop = True
+            while w_loop == True:
+                wanted_info = int(input('Select one of the options by typing the corrisponding number:\n 1. Role Description\n 2. Agent Abilities\n\n'))
+                #fetch role details data from database_connect.py
+                for agent in database_connect.agents_outcome:
+                    if wanted_info == 1:
+                        database_connect.get_role_details(agent[2], agent[0])
+                        #breaks loop
+                        w_loop = False
+                    #fetch abilities details data from database_connect.py
+                    elif wanted_info == 2:
+                        database_connect.get_ability_details(agent[0], agent[2])
+                        #breaks loop
+                        w_loop = False
+                    else:
+                        #Warn user and restart loop
+                        print("Please try again and make sure it's the corrisponding info number!")
+        
+        else:
+            #Boolean used to break the nested while loops
+            w_loop = True
+            w_loop2 = True
+            #Start of first while loop
+            while w_loop == True:
+                specification = int(input('Please specify which agent by typing the agent number: '))
+                #For loop to check if the selected agent is in the given list
+                for i,agent in enumerate(database_connect.agents_outcome):
+                    #If number present in the list start second while loop
+                    if specification == agent[0]:
+                        while w_loop2 == True:
+                            wanted_info = int(input('Select one of the options by typing the corrisponding number:\n 1. Role Description\n 2. Agent Abilities\n\n'))
+                            #fetch role details data from database_connect.py
+                            if wanted_info == 1:
+                                database_connect.get_role_details(agent[2], agent[0])
+                                #Set boolean to false to break the loops
+                                w_loop = False
+                                w_loop2 = False
+                            #fetch abilities details data from database_connect.py
+                            elif wanted_info == 2:
+                                database_connect.get_ability_details(agent[0], agent[2])
+                                #Set boolean to false to break the loops
+                                w_loop = False
+                                w_loop2 = False
+                            else:
+                                #Warn user and restart loop
+                                print("Please try again and make sure it's the corrisponding info number!")
+
+                    else:
+                        #Restart loop if inserted number is not in the given list
+                        if i == len(database_connect.agents_outcome) - 1:
+                            print("Please try again and make sure it's the correct agent number!")
                     
                     
                     
