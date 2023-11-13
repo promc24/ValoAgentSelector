@@ -14,7 +14,7 @@ import database_connect
 def get_agents_info():
     info = input('Would you like some info of the agents?').upper()
     #Check if user requires more info
-    if info == 'Y' or info == 'YES':
+    if info in database_connect.user_answers:
         #Boolean used to break the nested while loops
         w_loop = True
         w_loop2 = True

@@ -7,6 +7,7 @@ agents_outcome = []
 end_program_msg = 'Thank you for using this program!'
 agents_excluded = []
 all_agents_num  = []
+user_answers = ['YES', 'Y', 'YEAH', 'YA']
 
 
 def database_connection(agent_number):
@@ -33,7 +34,7 @@ def database_connection(agent_number):
                 cursor = sqliteConnection.cursor()
                 #Fetch the random agents numbers
                 exclude_a = input('Would you like to exclude any agents? ').upper()
-                if exclude_a == 'Y' or exclude_a == 'YES':
+                if exclude_a in user_answers:
                     print('Here is the list of all agents:\n\n')
                     #Fetch all data from agents_details table
                     cursor.execute("SELECT * FROM agents_details;")
@@ -136,7 +137,7 @@ def get_role_details(role, agent_num):
 
         #Directs user to role and ability info menu if yes
         ability_info = input("Would you like to learn about the Agent's abilities? ").upper()
-        if ability_info == 'Y' or ability_info == 'YES':
+        if ability_info in user_answers:
             get_ability_details(agent_num, role)
         else:
             #Empty list and end program
@@ -170,7 +171,7 @@ def get_ability_details(agent_num, role):
                 print(result[0][0] + '\n\n' + outcome[0][0])
                 check_rest = input('Would you like to check the other abilities? ').upper()
                 #breaks or continues the loop depensing if user wants more info 
-                if check_rest == 'Y' or check_rest == 'YES':
+                if check_rest in user_answers:
                     continue
                 else:
                     break
@@ -180,7 +181,7 @@ def get_ability_details(agent_num, role):
                 print(result[1][0] + '\n\n' + outcome[0][0])
                 check_rest = input('Would you like to check the other abilities? ').upper()
                 #breaks or continues the loop depensing if user wants more info 
-                if check_rest == 'Y' or check_rest == 'YES':
+                if check_rest in user_answers:
                     continue
                 else:
                     break
@@ -190,7 +191,7 @@ def get_ability_details(agent_num, role):
                 print(result[2][0] + '\n\n' + outcome[0][0])
                 check_rest = input('Would you like to check the other abilities? ').upper()
                 #breaks or continues the loop depensing if user wants more info 
-                if check_rest == 'Y' or check_rest == 'YES':
+                if check_rest in user_answers:
                     continue
                 else:
                     break
@@ -200,7 +201,7 @@ def get_ability_details(agent_num, role):
                 print(result[3][0] + '\n\n' + outcome[0][0])
                 check_rest = input('Would you like to check the other abilities? ').upper()
                 #breaks or continues the loop depensing if user wants more info 
-                if check_rest == 'Y' or check_rest == 'YES':
+                if check_rest in user_answers:
                     continue
                 else:
                     break
@@ -221,7 +222,7 @@ def get_ability_details(agent_num, role):
         sqliteConnection.close()
         #Directs user to role and abilities menu if wanted
         ability_info = input("Would you like to learn about the Agent's role? ").upper()
-        if ability_info == 'Y' or ability_info == 'YES':
+        if ability_info in user_answers:
             get_role_details(role, agent_num)
         else:
             ##Empty list and end program
